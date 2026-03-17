@@ -133,7 +133,7 @@ def stop_and_transcribe():
     subprocess.run(["pbcopy"], input=text.encode("utf-8"), check=True)
     time.sleep(0.15)
     result = subprocess.run(
-        ["/opt/homebrew/bin/cliclick", "kd:cmd", "t:v", "ku:cmd"],
+        ["/opt/homebrew/bin/cliclick", "ku:shift", "kd:cmd", "t:v", "ku:cmd"],
         capture_output=True, text=True
     )
     if result.returncode == 0:
