@@ -137,7 +137,14 @@ def stop_and_transcribe():
         import mlx_whisper
         _model_ready.wait()
         result = mlx_whisper.transcribe(
-            tmpfile, path_or_hf_repo=MODEL, language=LANGUAGE, verbose=False)
+            tmpfile,
+            path_or_hf_repo=MODEL,
+            language=LANGUAGE,
+            verbose=False,
+            condition_on_previous_text=False,
+            no_speech_threshold=0.6,
+            compression_ratio_threshold=2.0,
+        )
         text = result["text"].strip()
     except Exception as e:
         print(f"❌ Erreur transcription : {e}", flush=True)
@@ -156,7 +163,10 @@ def stop_and_transcribe():
     print(f"📝 {text}\n", flush=True)
     subprocess.run(["pbcopy"], input=text.encode("utf-8"), check=True)
     time.sleep(0.3)
-    helper = os.path.join(os.path.dirname(__file__), "paste-helper")
+    helper = os.environ.get(
+        "PASTE_HELPER",
+        os.path.join(os.path.dirname(__file__), "paste-helper")
+    )
     result = subprocess.run([helper], capture_output=True, text=True)
     if result.returncode == 0:
         print("✅ Collé", flush=True)
